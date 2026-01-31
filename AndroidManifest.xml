@@ -1,0 +1,12 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.android.arcadia">
+
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+
+    <application android:label="Arcadia" android:theme="@android:style/Theme.DeviceDefault.DayNight">
+
+        <service android:name=".OverlayService" android:exported="true" android:foregroundServiceType="specialUse" />
+
+    </application>
+</manifest>
