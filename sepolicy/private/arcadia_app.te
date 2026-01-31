@@ -1,0 +1,9 @@
+type arcadia_app, domain;
+app_domain(arcadia_app)
+
+# Allow Finding SurfaceFlinger (FPS) & PowerManager
+allow arcadia_app surfaceflinger_service:service_manager find;
+allow arcadia_app power_service:service_manager find;
+
+# Allow Reading /proc/stat (CPU usage)
+allow arcadia_app proc_stat:file r_file_perms;
