@@ -41,11 +41,8 @@ class OverlayService : LifecycleService(), ViewModelStoreOwner {
             
             setContent {
                 ArcadiaTheme {
-                    val systemHelper = if (BuildConfig.IS_SYSTEM_BUILD) {
-                        com.android.arcadia.data.SystemHelperReal()
-                    } else {
-                        com.android.arcadia.data.SystemHelperMock()
-                    }
+                    // Force Mock for Local Dev (BuildConfig removed to fix gradle issues)
+                    val systemHelper = com.android.arcadia.data.SystemHelperMock()
                     
                     ArcadiaOverlay(systemHelper = systemHelper)
                 }
