@@ -9,16 +9,24 @@ import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.setViewTreeLifecycleOwner
 import androidx.lifecycle.setViewTreeViewModelStoreOwner
-import com.android.arcadia.ui.ArcadiaOverlay
 import com.android.arcadia.ui.theme.ArcadiaTheme
 
-class OverlayService : LifecycleService(), ViewModelStoreOwner {
+import androidx.savedstate.SavedStateRegistry
+import androidx.savedstate.SavedStateRegistryController
+import androidx.savedstate.SavedStateRegistryOwner
+import androidx.savedstate.setViewTreeSavedStateRegistryOwner
+
+class OverlayService : LifecycleService(), ViewModelStoreOwner, SavedStateRegistryOwner {
 
     private val store = ViewModelStore()
+    private val savedStateRegistryController = SavedStateRegistryController.create(this)
+
     override val viewModelStore: ViewModelStore get() = store
+    override val savedStateRegistry: SavedStateRegistry get() = savedStateRegistryController.savedStateRegistry
 
     override fun onCreate() {
         super.onCreate()
+        savedStateRegistryController.performRestore(null)
         
         val windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
         
@@ -38,13 +46,15 @@ class OverlayService : LifecycleService(), ViewModelStoreOwner {
         val composeView = ComposeView(this).apply {
             setViewTreeLifecycleOwner(this@OverlayService)
             setViewTreeViewModelStoreOwner(this@OverlayService)
+            setViewTreeSavedStateRegistryOwner(this@OverlayService)
             
             setContent {
                 ArcadiaTheme {
-                    // Force Mock for Local Dev (BuildConfig removed to fix gradle issues)
+                    // TODO: Re-enable overlay when UI is ready
+                    /* 
                     val systemHelper = com.android.arcadia.data.SystemHelperMock()
-                    
-                    ArcadiaOverlay(systemHelper = systemHelper)
+                    ArcadiaOverlay(systemHelper = systemHelper) 
+                    */
                 }
             }
         }

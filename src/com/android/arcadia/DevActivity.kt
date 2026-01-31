@@ -10,42 +10,20 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.android.arcadia.ui.ArcadiaSettingsScreen
+import com.android.arcadia.ui.theme.ArcadiaTheme
 
 class DevActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        actionBar?.hide()
         
         setContent {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Button(onClick = { checkOverlayPermission() }) {
-                    Text("Start Arcadia Overlay")
-                }
+            ArcadiaTheme {
+                ArcadiaSettingsScreen()
             }
-        }
-    }
-
-    private fun checkOverlayPermission() {
-        if (!Settings.canDrawOverlays(this)) {
-            val intent = Intent(
-                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:$packageName")
-            )
-            startActivityForResult(intent, 123)
-        } else {
-            startOverlay()
-        }
-    }
-
-    private fun startOverlay() {
-        val intent = Intent(this, OverlayService::class.java)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(intent)
-        } else {
-            startService(intent)
         }
     }
 }
