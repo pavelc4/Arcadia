@@ -35,7 +35,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ArcadiaSettingsScreen() {
+fun ArcadiaSettingsScreen(onPerAppClick: () -> Unit = {}) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     
     Scaffold(
@@ -251,7 +251,8 @@ fun ArcadiaSettingsScreen() {
                 NavigationRow(
                     title = "Per-App Settings", 
                     subtitle = "Customize configuration for specific apps", 
-                    icon = Icons.Default.Window
+                    icon = Icons.Default.Window,
+                    onClick = onPerAppClick
                 )
                 
                 NavigationRow(

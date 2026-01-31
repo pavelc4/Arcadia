@@ -12,8 +12,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.android.arcadia.ui.PerAppScreen
 import com.android.arcadia.ui.ArcadiaSettingsScreen
 import com.android.arcadia.ui.theme.ArcadiaTheme
+import androidx.compose.runtime.*
 
 class DevActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,7 +24,16 @@ class DevActivity : ComponentActivity() {
         
         setContent {
             ArcadiaTheme {
-                ArcadiaSettingsScreen()
+                var currentScreen by remember { mutableStateOf("settings") }
+                
+                when (currentScreen) {
+                    "settings" -> ArcadiaSettingsScreen(
+                        onPerAppClick = { currentScreen = "per_app" }
+                    )
+                    "per_app" -> PerAppScreen(
+                        onBack = { currentScreen = "settings" }
+                    )
+                }
             }
         }
     }
