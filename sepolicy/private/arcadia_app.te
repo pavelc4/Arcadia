@@ -1,9 +1,47 @@
-type arcadia_app, domain;
+# SPDX-FileCopyrightText: 2026 pavelc4
+# SPDX-License-Identifier: Apache-2.0
+
 app_domain(arcadia_app)
+binder_use(arcadia_app)
 
-# Allow Finding SurfaceFlinger (FPS) & PowerManager
-allow arcadia_app surfaceflinger_service:service_manager find;
-allow arcadia_app power_service:service_manager find;
+# Allow finding system services
+allow arcadia_app {
+  activity_service
+  activity_task_service
+  app_api_service
+  batterystats_service
+  cameraserver_service
+  content_capture_service
+  device_state_service
+  drmserver_service
+  game_service
+  gpu_service
+  hint_service
+  media_session_service
+  mediaextractor_service
+  mediametrics_service
+  mediaserver_service
+  netstats_service
+  permission_checker_service
+  sensorservice_service
+  statusbar_service
+  thermal_service
+  surfaceflinger_service
+  power_service
+}:service_manager find;
 
-# Allow Reading /proc/stat (CPU usage)
+# Allow access to app data
+allow arcadia_app system_app_data_file:dir create_dir_perms;
+allow arcadia_app system_app_data_file:{ file lnk_file } create_file_perms;
+
+# GPU Service interaction
+binder_call(arcadia_app, gpuservice)
+
+# Reading System Stats (Thermal, CPU, Sysfs)
+r_dir_file(arcadia_app, sysfs_thermal)
+allow arcadia_app sysfs_thermal:file { read open };
+allow arcadia_app sysfs:file { read open getattr ioctl };
 allow arcadia_app proc_stat:file r_file_perms;
+
+# Binder calls to system server
+allow arcadia_app system_server:binder { call transfer };
