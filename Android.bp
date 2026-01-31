@@ -1,0 +1,27 @@
+package {
+    default_applicable_licenses: ["Android-Apache-2.0"],
+}
+
+android_app {
+    name: "Arcadia",
+    srcs: ["src/**/*.kt"],
+    resource_dirs: ["res"],
+    manifest: "AndroidManifest.xml",
+
+    platform_apis: true,
+    certificate: "platform",
+    privileged: true,
+
+    static_libs: [
+        "androidx.core_core-ktx",
+        "androidx.compose.runtime_runtime",
+        "androidx.compose.ui_ui",
+        "androidx.compose.material3_material3",
+        "androidx.activity_activity-compose",
+        "androidx.lifecycle_lifecycle-service",
+        "androidx.lifecycle_lifecycle-runtime-compose",
+        "kotlinx-coroutines-android",
+    ],
+
+    kotlincflags: ["-Xjvm-default=all"],
+}
