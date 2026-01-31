@@ -1,0 +1,2 @@
+type arcadia_app, domain;
+typeattribute arcadia_app mlstrustedsubject;
