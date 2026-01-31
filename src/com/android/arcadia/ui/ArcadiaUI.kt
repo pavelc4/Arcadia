@@ -23,32 +23,44 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.material.icons.filled.Speed
+import androidx.compose.material.icons.filled.Memory
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.FilterChip
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 
 @Composable
-fun ArcadiaOverlay() {
+fun ArcadiaOverlay(systemHelper: com.android.arcadia.data.SystemHelper) {
     var isExpanded by remember { mutableStateOf(false) }
+    val fps by systemHelper.getFps().collectAsStateWithLifecycle(initialValue = 0)
+    val cpu by systemHelper.getCpuUsage().collectAsStateWithLifecycle(initialValue = 0)
 
     Surface(
         onClick = { isExpanded = !isExpanded },
-        shape = if (isExpanded) MaterialTheme.shapes.large else MaterialTheme.shapes.small,
-        color = MaterialTheme.colorScheme.surfaceContainerHigh,
-        tonalElevation = 6.dp,
+        shape = if (isExpanded) MaterialTheme.shapes.extraLarge else MaterialTheme.shapes.extraLarge, // Always curvy
+        color = MaterialTheme.colorScheme.surfaceContainer, // M3 Container
+        tonalElevation = 4.dp,
+        shadowElevation = 6.dp,
         modifier = Modifier
             .wrapContentSize()
             .animateContentSize(
                 animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                    stiffness = Spring.StiffnessLow
+                    dampingRatio = Spring.DampingRatioLowBouncy,
+                    stiffness = Spring.StiffnessMediumLow
                 )
             )
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(12.dp)
+            modifier = Modifier.padding(16.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Gamepad,
@@ -58,26 +70,66 @@ fun ArcadiaOverlay() {
                 
                 if (!isExpanded) {
                     Text(
-                        text = "60 FPS",
-                        style = MaterialTheme.typography.labelLarge,
+                        text = "$fps FPS",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                } else {
+                    Text(
+                        text = "Arcadia",
+                        style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }
 
-            AnimatedVisibility(visible = isExpanded) {
+            AnimatedVisibility(
+                visible = isExpanded,
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
+            ) {
                 Column(
-                    modifier = Modifier.padding(top = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    modifier = Modifier.padding(top = 24.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Text(
-                        text = "Performance Dashboard",
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    Text("CPU: 45%", style = MaterialTheme.typography.bodyMedium)
-                    Text("GPU: 30%", style = MaterialTheme.typography.bodyMedium)
+                    
+                    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                        InfoCard(title = "FPS", value = "$fps", icon = Icons.Default.Speed)
+                        InfoCard(title = "CPU", value = "$cpu%", icon = Icons.Default.Memory)
+                    }
+
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        FilterChip(
+                            selected = true,
+                            onClick = { },
+                            label = { Text("Performance") }
+                        )
+                        FilterChip(
+                            selected = false,
+                            onClick = { },
+                            label = { Text("Power Save") }
+                        )
+                    }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun InfoCard(title: String, value: String, icon: androidx.compose.ui.graphics.vector.ImageVector) {
+    Surface(
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        shape = MaterialTheme.shapes.medium,
+        modifier = Modifier.size(100.dp, 80.dp)
+    ) {
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(imageVector = icon, contentDescription = null, tint = MaterialTheme.colorScheme.secondary)
+            Text(text = value, style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurface)
+            Text(text = title, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }

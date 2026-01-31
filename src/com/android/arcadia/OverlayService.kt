@@ -41,7 +41,13 @@ class OverlayService : LifecycleService(), ViewModelStoreOwner {
             
             setContent {
                 ArcadiaTheme {
-                    ArcadiaOverlay()
+                    val systemHelper = if (BuildConfig.IS_SYSTEM_BUILD) {
+                        com.android.arcadia.data.SystemHelperReal()
+                    } else {
+                        com.android.arcadia.data.SystemHelperMock()
+                    }
+                    
+                    ArcadiaOverlay(systemHelper = systemHelper)
                 }
             }
         }
