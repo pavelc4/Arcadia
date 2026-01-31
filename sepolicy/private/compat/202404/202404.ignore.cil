@@ -1,0 +1,8 @@
+;; new_objects - a collection of types that have been introduced that have no
+;;   analogue in older kernels.  Thus, we do not want to map any types to
+;;   these new objects.  Instead, we want to ignore them.
+;;   (typeattributeset new_objects (type1 type2 ...))
+
+(typeattributeset new_objects
+    ( arcadia_app )
+)
