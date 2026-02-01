@@ -35,7 +35,10 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ArcadiaSettingsScreen(onPerAppClick: () -> Unit = {}) {
+fun ArcadiaSettingsScreen(
+    onPerAppClick: () -> Unit = {},
+    onSystemMonitorClick: () -> Unit = {}
+) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     
     Scaffold(
@@ -258,7 +261,8 @@ fun ArcadiaSettingsScreen(onPerAppClick: () -> Unit = {}) {
                 NavigationRow(
                     title = "System Monitor", 
                     subtitle = "Real-time metrics & logged history", 
-                    icon = Icons.Default.Analytics
+                    icon = Icons.Default.Analytics,
+                    onClick = onSystemMonitorClick
                 )
             }
 
